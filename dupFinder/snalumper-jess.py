@@ -13,7 +13,7 @@ lumpyscripts='/proj/ideel/linjtlab/users/ChristianP/tripleMuts/lumpy/lumpy-sv/sc
 
 ####### Target #######
 rule all:
-	input: expand('aln/{sample}', sample = SAMPLES)
+	input: expand('aln/{sample}.bam', sample = SAMPLES)
 	#input: expand('aln/{sample}.libstats', sample = SAMPLES)
 	#input: expand('sv/{sample}.vcf', sample = SAMPLES)
 	#input: expand('sv/{sample}.gt.vcf', sample = SAMPLES)
@@ -48,8 +48,8 @@ rule get_lib_dist_info:
 		-r 151 -X 4 -N 10000 -o {output.histo} > {output.libstats}'
 
 rule fastq_to_bam:
-	# using Molly's trimmed FASTQs
 	input: 'symlinks/{sample}_R1.PAIREDtrimmomatictrimmed.fastq.gz', 'symlinks/{sample}_R2.PAIREDtrimmomatictrimmed.fastq.gz'
-	output: 'aln/{sample}'
-	shell: 'speedseq align -R "@RG\tID:id\tSM:sample\tLB:lib" -o {output} \
+	output: 'aln/{sample}.bam'
+	params: 'aln/{sample}'
+	shell: 'speedseq align -R "@RG\tID:id\tSM:sample\tLB:lib" -o {params} \
 		{REF} {readWD}{input[0]} {readWD}{input[1]}'
